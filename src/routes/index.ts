@@ -6,6 +6,7 @@ import {
   createPost,
   getPostById,
   getPosts,
+  updatePost,
 } from "../controllers/PostController";
 
 //inistialize router
@@ -19,5 +20,8 @@ router.post("/", (c) => createPost(c));
 
 // routes posts details
 router.get("/:id", (c) => getPostById(c));
+
+// routes posts update
+router.patch("/:id", (c) => updatePost(c));
 
 export const Routes = router;
