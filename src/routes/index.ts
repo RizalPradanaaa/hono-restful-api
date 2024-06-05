@@ -4,6 +4,7 @@ import { Hono } from "hono";
 //import controller
 import {
   createPost,
+  deletePost,
   getPostById,
   getPosts,
   updatePost,
@@ -23,5 +24,8 @@ router.get("/:id", (c) => getPostById(c));
 
 // routes posts update
 router.patch("/:id", (c) => updatePost(c));
+
+// routes posts delete
+router.delete("/:id", (c) => deletePost(c));
 
 export const Routes = router;
