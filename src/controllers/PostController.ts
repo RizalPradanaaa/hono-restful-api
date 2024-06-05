@@ -4,6 +4,12 @@ import { Context } from "hono";
 //import prisma client
 import prisma from "../../prisma/client";
 
+const findById = async (id: number): Promise<any> => {
+  return await prisma.post.findUnique({
+    where: { id: id },
+  });
+};
+
 /**
  * Getting all posts
  */
@@ -69,9 +75,7 @@ export async function getPostById(c: Context) {
     const postId = parseInt(c.req.param("id"));
 
     //get post by id
-    const post = await prisma.post.findUnique({
-      where: { id: postId },
-    });
+    const post = await findById(postId);
 
     //if post not found
     if (!post) {
@@ -107,6 +111,21 @@ export async function updatePost(c: Context) {
     // Konversi tipe id menjadi number
     const postId = parseInt(c.req.param("id"));
 
+    //check post by id
+    let post = await findById(postId);
+
+    //if post not found
+    if (!post) {
+      //return JSON
+      return c.json(
+        {
+          success: false,
+          message: "Post Not Found!",
+        },
+        404
+      );
+    }
+
     //get body request
     const body = await c.req.parseBody();
 
@@ -115,7 +134,7 @@ export async function updatePost(c: Context) {
     const content = typeof body["content"] === "string" ? body["content"] : "";
 
     //update post with prisma
-    const post = await prisma.post.update({
+    post = await prisma.post.update({
       where: { id: postId },
       data: {
         title: title,
@@ -145,6 +164,21 @@ export async function deletePost(c: Context) {
   try {
     // Konversi tipe id menjadi number
     const postId = parseInt(c.req.param("id"));
+
+    //get post by id
+    const post = await findById(postId);
+
+    //if post not found
+    if (!post) {
+      //return JSON
+      return c.json(
+        {
+          success: false,
+          message: "Post Not Found!",
+        },
+        404
+      );
+    }
 
     //delete post with prisma
     await prisma.post.delete({
